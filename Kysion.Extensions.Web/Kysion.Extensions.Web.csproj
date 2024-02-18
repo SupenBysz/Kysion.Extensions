@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2277.86" />
+    <PackageReference Include="WebView2.Runtime.X64" Version="121.0.2277.112" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Kysion.Extensions.Core\Kysion.Extensions.Core.csproj" />
+  </ItemGroup>
+
+</Project>
