@@ -130,28 +130,6 @@ function initStyle() {
 }
 initStyle();
 ";
-
-//                    if (InjectStyleContent != string.Empty)
-//                    return @"
-//function initStyle() {
-//    setTimeout(()=>{
-//        if(document.head == null)
-//            return initStyle();
-
-//        createStyleByHead(document, `" + InjectStyleContent + @"`);
-//        getKysionWebHost().OnInjectStyleComplete();
-//    });
-//}
-////document.addEventListener('load', function() {
-////    createStyleByHead(document, `" + InjectStyleContent + @"`);
-////    getKysionWebHost().OnInjectStyleComplete();
-////})
-//";
-//                return @"
-//document.addEventListener('load', function() {
-//    getKysionWebHost().OnInjectStyleComplete();
-//})
-//";
             }
         }
 
@@ -179,6 +157,44 @@ function formatParams(params = {}) {
         p.append(key, params[key]);
     }
     return p;
+}
+
+function requestSend(url, method, body = {}) {
+    return new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+
+        const params = formatParams(body);
+
+        if (method == 'GET') {
+            if(url.indexOf('?') > 0)
+                url += '&' + params.toString();
+            else
+                url += '?' + params.toString();
+        } else if (method == 'POST') {
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhr.setRequestHeader('Accept', 'application/json');
+        }
+        
+        xhr.open(method, url, true);
+        xhr.onload = function (e) {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                return resolve(xhr.responseText);
+            }
+            else {
+                return resolve('');
+            }
+        };
+
+        xhr.onerror = function (e) {
+            return reject(e);
+        };
+
+        // xhr will ignore body when the request is GET or HEAD
+        if(method == 'GET')
+            xhr.send();
+        else
+            xhr.send(params.toString());
+    });
 }
 
 function querySelector(code, param = {winObj: window, filterFunc: null}) {

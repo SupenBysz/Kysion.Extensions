@@ -151,6 +151,7 @@ namespace Kysion.Extensions.Core.Models
                     "Kysion";
                 var lcode = EncryptHelper.MD5(checkCode);
                 return lcode == LicenseCode;
+                //return true;
             }
         }
     }

@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Kysion.Extensions.Core.ViewModels
 {
-    public class BaseViewModel<T> : BaseModel, IBaseViewModel
+    public class BaseViewModel<T> : BaseModel, IBaseViewModel, IDisposable
     {
         public string Title
         {
@@ -29,6 +29,11 @@ namespace Kysion.Extensions.Core.ViewModels
         public BaseViewModel(string title)
         {
             Title = title;
+        }
+
+        public virtual void Dispose()
+        {
+
         }
     }
 }

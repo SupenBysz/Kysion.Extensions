@@ -30,6 +30,12 @@ namespace Kysion.Extensions.Web.ViewModels
             browser.Source = BaseDomain;
         }
 
+        public override void Dispose()
+        {
+            webBrowser?.Dispose();
+            base.Dispose();
+        }
+
         public Uri BaseDomain { get; private set; }
         /// <summary>
         /// WebView2 组件
