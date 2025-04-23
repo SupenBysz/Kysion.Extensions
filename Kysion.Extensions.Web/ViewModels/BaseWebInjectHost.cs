@@ -65,5 +65,13 @@ namespace Kysion.Extensions.Web.ViewModels
             baseModel.logger.LogInformation("数据适配成功");
             base.OnInjectScriptComplete();
         }
+
+        /// <summary>
+        /// 关闭窗口事件
+        /// </summary>
+        public override void CloseWindow()
+        {
+            base.CloseWindow();
+        }
     }
 }

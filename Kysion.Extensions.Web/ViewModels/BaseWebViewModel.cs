@@ -62,6 +62,10 @@ namespace Kysion.Extensions.Web.ViewModels
         /// </summary>
         public AbstractWebInjectHost? InjectViewModel { get; set; }
         /// <summary>
+        /// 模型注入完成事件
+        /// </summary>
+        public event EventHandler<AbstractWebInjectHost>? InjectViewModelEvent;
+        /// <summary>
         /// Cookie
         /// </summary>
         public List<Cookie> CookieArr { get; set; } = new();
@@ -106,6 +110,8 @@ namespace Kysion.Extensions.Web.ViewModels
                     OnInjectScriptComplete();
                     InjectScriptCompleteEvent?.Invoke();
                 };
+
+                InjectViewModelEvent?.Invoke(this, InjectViewModel);
             }
 
             browser.ZoomFactor = 1;

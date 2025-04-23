@@ -22,6 +22,10 @@ namespace Kysion.Extensions.Web.ViewModels
         /// 脚本注入完成事件
         /// </summary>
         public event Action? InjectScriptCompleteEvent;
+        /// <summary>
+        /// 关闭窗口事件
+        /// </summary>
+        public event Action? CloseWindowEvent;
 
         public string InjectName { get; set; } = string.Empty;
 
@@ -85,6 +89,14 @@ namespace Kysion.Extensions.Web.ViewModels
             InjectScriptCompleteEvent?.Invoke();
         }
 
+        /// <summary>
+        /// 关闭窗口事件
+        /// </summary>
+        public virtual void CloseWindow()
+        {
+            CloseWindowEvent?.Invoke();
+        }
+
         public string InjectScript
         {
             get
@@ -103,8 +115,11 @@ namespace Kysion.Extensions.Web.ViewModels
                 if (IsCustomAlert)
                     result += customAlert;
 
-                result = result.Replace("ExecSuccessMessage(", "ExecSuccessMessage_" + InjectName + "(");
+                result = result.Replace("ExecSuccessMessage(", "ExecSuccessMessage_" + InjectName + "("); 
                 result = result.Replace("ExecFailureMessage(", "ExecFailureMessage_" + InjectName + "(");
+                result = result.Replace("CloseWindowMessage(", "CloseWindowMessage_" + InjectName + "(");
+                result = result + "function getInjectName() { return '" + InjectName + "'; }\r\n";
+                result = result + "window.injectName = '" + InjectName + "';\r\n";
                 return result;
             }
         }
@@ -371,6 +386,9 @@ function ExecSuccessMessage_" + InjectName + @"(str) {
 }
 function ExecFailureMessage_" + InjectName + @"(str) {
     window.chrome.webview.hostObjects." + InjectName + @".Failure(str);
+}
+function CloseWindowMessage_" + InjectName + @"() {
+    window.chrome.webview.hostObjects." + InjectName + @".CloseWindow();
 }
 ";
         }

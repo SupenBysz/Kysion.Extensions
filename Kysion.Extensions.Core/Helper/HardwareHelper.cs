@@ -53,7 +53,8 @@ namespace Kysion.Extensions.Core.Helper
             {
                 try
                 {
-                    var key = GetLocalMacAddress() + ";" + GetDiskSerialNumber() + ";" + GetCpuSerialNumber() + ";" + GetHardDiskID() + ";" + KysionConfig.Instance.DefaultLicenseType;
+                    var key = GetDiskSerialNumber() + ";" + GetCpuSerialNumber() + ";" + GetHardDiskID() + ";" + KysionConfig.Instance.DefaultLicenseType;
+                    //var key = GetLocalMacAddress() + ";" + GetDiskSerialNumber() + ";" + GetCpuSerialNumber() + ";" + GetHardDiskID() + ";" + KysionConfig.Instance.DefaultLicenseType;
                     // 此处获取分区序列码会导致page加载失败，原因未知
                     //key += ";" + GetdiskID();
                     var reesult = EncryptHelper.MD5(key).Substring(8);
