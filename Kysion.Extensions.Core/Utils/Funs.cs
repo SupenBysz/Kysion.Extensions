@@ -191,5 +191,34 @@ namespace Kysion.Extensions.Core.Utils
 
             return randomNumber;
         }
+
+        /// <summary>
+        /// 防抖函数
+        /// </summary>
+        /// <param name="action"></param>
+        /// <param name="interval"></param>
+        /// <param name="cancelCtl"></param>
+        public static void Debounce<T>(this Func<T> action, int interval, Action<T>? cb = null)
+        {
+            DebounceHelper.Debounce(action, interval, cb);
+        }
+    }
+
+    public static class DebounceHelper
+    {
+        private static Timer? debounceTimer;
+        public static void Debounce<T>(Func<T> action, int interval, Action<T>? cb = null)
+        {
+            debounceTimer?.Dispose();
+            debounceTimer = new Timer(_ =>
+            {
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    T result = action();
+                    cb?.Invoke(result);
+                });
+                debounceTimer?.Dispose();
+            }, null, interval, Timeout.Infinite);
+        }
     }
 }

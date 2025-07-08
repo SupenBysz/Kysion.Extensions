@@ -21,7 +21,7 @@ namespace Kysion.Extensions.Core.Services.APIs.SystemAPIs
             {
                 using (var api = new ClientAPI(requset, "User"))
                 {
-                    var response = await api.response.WaitAsync(new CancellationToken());
+                    var response = await api.Response.WaitAsync(new CancellationToken());
                     Debug.WriteLine(response.Content);
                 }
             }

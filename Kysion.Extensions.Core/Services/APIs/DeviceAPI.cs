@@ -27,7 +27,7 @@ namespace Kysion.Extensions.Core.Services.APIs
                 {
                     try
                     {
-                        var response = await cli.response.WaitAsync(new CancellationToken());
+                        var response = await cli.Response.WaitAsync(new CancellationToken());
                         var body = await response.Content.ReadAsStringAsync();
                         var responseData = JsonConvert.DeserializeObject<ResponseBody<string>>(body);
 

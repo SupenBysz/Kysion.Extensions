@@ -57,7 +57,7 @@ namespace Kysion.Extensions.Core.Helper
                     //var key = GetLocalMacAddress() + ";" + GetDiskSerialNumber() + ";" + GetCpuSerialNumber() + ";" + GetHardDiskID() + ";" + KysionConfig.Instance.DefaultLicenseType;
                     // 此处获取分区序列码会导致page加载失败，原因未知
                     //key += ";" + GetdiskID();
-                    var reesult = EncryptHelper.MD5(key).Substring(8);
+                    string reesult = EncryptHelper.MD5(key)[8..];
                     KysionConfig.Instance.HardwareUUID = reesult;
                     return await HttpService.DeviceAPI.GetDeviceRegister();
                 }
@@ -70,14 +70,24 @@ namespace Kysion.Extensions.Core.Helper
 
         internal static string GetDiskSerialNumber()
         {
-            var diskSerial = string.Empty;
-            ManagementClass cimobject = new ManagementClass("Win32_DiskDrive");
-            ManagementObjectCollection moc = cimobject.GetInstances();
-            foreach (ManagementObject mo in moc)
+            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                return string.Empty;
+
+            try
             {
-                diskSerial += (string)mo.Properties["Model"].Value;
+                var diskSerial = string.Empty;
+                ManagementClass cimobject = new("Win32_DiskDrive");
+                ManagementObjectCollection moc = cimobject.GetInstances();
+                foreach (ManagementObject mo in moc.Cast<ManagementObject>())
+                {
+                    diskSerial += (string)mo.Properties["Model"].Value;
+                }
+                return diskSerial;
             }
-            return diskSerial;
+            catch (Exception)
+            {
+                return string.Empty;
+            }
         }
 
         internal static string GetHardDiskID()
@@ -85,9 +95,9 @@ namespace Kysion.Extensions.Core.Helper
             string strHardDiskID = string.Empty;
             try
             {
-                ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT * FROM Win32_PhysicalMedia");
+                ManagementObjectSearcher searcher = new("SELECT * FROM Win32_PhysicalMedia");
 
-                foreach (ManagementObject mo in searcher.Get())
+                foreach (ManagementObject mo in searcher.Get().Cast<ManagementObject>())
                 {
                     var did = mo["SerialNumber"]?.ToString()?.Trim() ?? string.Empty;
 
@@ -109,9 +119,9 @@ namespace Kysion.Extensions.Core.Helper
         internal static string GetCpuSerialNumber()
         {
             var cpuSerial = string.Empty;
-            ManagementClass mcCpu = new ManagementClass("win32_Processor");
+            ManagementClass mcCpu = new("win32_Processor");
             ManagementObjectCollection mocCpu = mcCpu.GetInstances();
-            foreach (ManagementObject m in mocCpu)
+            foreach (ManagementObject m in mocCpu.Cast<ManagementObject>())
             {
                 var cpuId = m["ProcessorId"].ToString() ?? string.Empty;
 
@@ -144,7 +154,7 @@ namespace Kysion.Extensions.Core.Helper
 		/// <param name="lpFileSystemNameBuffer">指定一个缓冲区,用于装载文件系统的名称（如FAT，NTFS以及其他）       </param>
 		/// <param name="nFileSystemNameSize">lpFileSystemNameBuffer字串的长度</param>
 		/// <returns></returns>
-		[DllImport("Kernel32.dll", CharSet = CharSet.Auto)]
+		[DllImport("Kernel32.dll", CharSet = CharSet.Unicode)]
         internal static extern bool GetVolumeInformation(string lpRootPathName, string lpVolumeNameBuffer, int nVolumeNameSize, ref int lpVolumeSerialNumber, int lpMaximumComponentLength, int lpFileSystemFlags, string lpFileSystemNameBuffer, int nFileSystemNameSize);
         /// <summary>
         /// 获取硬盘ID
